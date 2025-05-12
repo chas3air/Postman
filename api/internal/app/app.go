@@ -38,6 +38,11 @@ func (a *App) Run() error {
 	usersController := userscontroller.New(a.log, usersService)
 	r := mux.NewRouter()
 
+	r.HandleFunc("/api/v1/health-check", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Ok"))
+		w.WriteHeader(http.StatusOK)
+	})
+
 	r.HandleFunc("/api/v1/users", usersController.GetUsersHandler).Methods(http.MethodGet)
 	r.HandleFunc("/api/v1/users/{id}", usersController.GetUserByIdHandler).Methods(http.MethodGet)
 	r.HandleFunc("/api/v1/users", usersController.InsertUserHandler).Methods(http.MethodPost)
