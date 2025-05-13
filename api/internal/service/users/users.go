@@ -49,7 +49,7 @@ func (u *UsersService) GetUsers(ctx context.Context) ([]models.User, error) {
 
 // GetUserById implements service.IUsersService.
 func (u *UsersService) GetUserById(ctx context.Context, id uuid.UUID) (models.User, error) {
-	const op = "services.GetUsers"
+	const op = "services.GetUserById"
 	log := u.log.With(
 		"op", op,
 	)
@@ -70,7 +70,7 @@ func (u *UsersService) GetUserById(ctx context.Context, id uuid.UUID) (models.Us
 
 // InsertUser implements service.IUsersService.
 func (u *UsersService) InsertUser(ctx context.Context, user models.User) (models.User, error) {
-	const op = "services.GetUsers"
+	const op = "services.InsertUser"
 	log := u.log.With(
 		"op", op,
 	)
@@ -91,7 +91,7 @@ func (u *UsersService) InsertUser(ctx context.Context, user models.User) (models
 
 // UpdateUser implements service.IUsersService.
 func (u *UsersService) UpdateUser(ctx context.Context, id uuid.UUID, user models.User) (models.User, error) {
-	const op = "services.GetUsers"
+	const op = "services.UpdateUser"
 	log := u.log.With(
 		"op", op,
 	)
@@ -112,7 +112,7 @@ func (u *UsersService) UpdateUser(ctx context.Context, id uuid.UUID, user models
 
 // DeleteUSer implements service.IUsersService.
 func (u *UsersService) DeleteUSer(ctx context.Context, id uuid.UUID) (models.User, error) {
-	const op = "services.GetUsers"
+	const op = "services.DeleteUser"
 	log := u.log.With(
 		"op", op,
 	)
