@@ -12,5 +12,5 @@ type IUsersService interface {
 	GetUserById(ctx context.Context, id uuid.UUID) (models.User, error)
 	InsertUser(ctx context.Context, user models.User) (models.User, error)
 	UpdateUser(ctx context.Context, id uuid.UUID, user models.User) (models.User, error)
-	DeleteUSer(ctx context.Context, id uuid.UUID) (models.User, error)
+	DeleteUser(ctx context.Context, id uuid.UUID) (models.User, error)
 }

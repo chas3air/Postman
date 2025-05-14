@@ -33,6 +33,12 @@ func (u *UsersService) GetUsers(ctx context.Context) ([]models.User, error) {
 		"op", op,
 	)
 
+	select {
+	case <-ctx.Done():
+		return nil, fmt.Errorf("%s: %w", op, ctx.Err())
+	default:
+	}
+
 	users, err := u.storage.GetUsers(ctx)
 	if err != nil {
 		if errors.Is(err, storageerrors.ErrNotFound) {
@@ -53,6 +59,12 @@ func (u *UsersService) GetUserById(ctx context.Context, id uuid.UUID) (models.Us
 	log := u.log.With(
 		"op", op,
 	)
+
+	select {
+	case <-ctx.Done():
+		return models.User{}, fmt.Errorf("%s: %w", op, ctx.Err())
+	default:
+	}
 
 	user, err := u.storage.GetUserById(ctx, id)
 	if err != nil {
@@ -75,6 +87,12 @@ func (u *UsersService) InsertUser(ctx context.Context, user models.User) (models
 		"op", op,
 	)
 
+	select {
+	case <-ctx.Done():
+		return models.User{}, fmt.Errorf("%s: %w", op, ctx.Err())
+	default:
+	}
+
 	user, err := u.storage.InsertUser(ctx, user)
 	if err != nil {
 		if errors.Is(err, storageerrors.ErrAlreadyExists) {
@@ -96,6 +114,12 @@ func (u *UsersService) UpdateUser(ctx context.Context, id uuid.UUID, user models
 		"op", op,
 	)
 
+	select {
+	case <-ctx.Done():
+		return models.User{}, fmt.Errorf("%s: %w", op, ctx.Err())
+	default:
+	}
+
 	user, err := u.storage.UpdateUser(ctx, id, user)
 	if err != nil {
 		if errors.Is(err, storageerrors.ErrNotFound) {
@@ -110,12 +134,18 @@ func (u *UsersService) UpdateUser(ctx context.Context, id uuid.UUID, user models
 	return user, nil
 }
 
-// DeleteUSer implements service.IUsersService.
-func (u *UsersService) DeleteUSer(ctx context.Context, id uuid.UUID) (models.User, error) {
+// DeleteUser implements service.IUsersService.
+func (u *UsersService) DeleteUser(ctx context.Context, id uuid.UUID) (models.User, error) {
 	const op = "services.DeleteUser"
 	log := u.log.With(
 		"op", op,
 	)
+
+	select {
+	case <-ctx.Done():
+		return models.User{}, fmt.Errorf("%s: %w", op, ctx.Err())
+	default:
+	}
 
 	user, err := u.storage.DeleteUser(ctx, id)
 	if err != nil {
