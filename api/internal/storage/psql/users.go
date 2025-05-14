@@ -151,10 +151,71 @@ func (p *PsqlStorage) InsertUser(ctx context.Context, user models.User) (models.
 
 // UpdateUser implements storage.IUsersStorage.
 func (p *PsqlStorage) UpdateUser(ctx context.Context, id uuid.UUID, user models.User) (models.User, error) {
-	panic("unimplemented")
+	const op = "storage.UpdateUser"
+	log := p.log.With(
+		"op", op,
+	)
+
+	select {
+	case <-ctx.Done():
+		return models.User{}, fmt.Errorf("%s: %w", op, ctx.Err())
+	default:
+	}
+
+	result, err := p.DB.ExecContext(ctx, `
+		UPDATE `+UsersTableName+`
+		SET login=$1, password=$2
+		WHERE id=$3;
+	`, user.Login, user.Password, id)
+	if err != nil {
+		log.Error("Error updating user", sl.Err(err))
+		return models.User{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	if rowsAffected, _ := result.RowsAffected(); rowsAffected == 0 {
+		log.Error("No rows affecte during update operation", sl.Err(err))
+		return models.User{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return user, nil
 }
 
 // DeleteUSer implements storage.IUsersStorage.
 func (p *PsqlStorage) DeleteUser(ctx context.Context, id uuid.UUID) (models.User, error) {
-	panic("unimplemented")
+	const op = "storage.DeleteUser"
+	log := p.log.With(
+		"op", op,
+	)
+
+	select {
+	case <-ctx.Done():
+		return models.User{}, fmt.Errorf("%s: %w", op, ctx.Err())
+	default:
+	}
+
+	var user models.User
+	err := p.DB.QueryRowContext(ctx, `
+		SELECT id, login, password FROM `+UsersTableName+`
+		WHERE id=$1;
+	`, id).Scan(&user.Id, &user.Login, &user.Password)
+	if err != nil {
+		log.Error("Error retrieving user for deletion", sl.Err(err))
+		return models.User{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	result, err := p.DB.ExecContext(ctx, `
+		DELETE FROM `+UsersTableName+`
+		WHERE id=$1;
+	`, id)
+	if err != nil {
+		log.Error("Error deleting user", sl.Err(err))
+		return models.User{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	if rowsAffected, _ := result.RowsAffected(); rowsAffected == 0 {
+		log.Error("No rows affected during delete operation", sl.Err(err))
+		return models.User{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return user, nil
 }
