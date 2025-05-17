@@ -7,6 +7,7 @@ import (
 	"api/pkg/lib/logger/sl"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -108,6 +109,8 @@ func (u *UsersController) InsertUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	fmt.Println("body", string(body))
+	
 	var user models.User
 	if err = json.Unmarshal(body, &user); err != nil {
 		log.Error("Error parse request body to object", sl.Err(err))
